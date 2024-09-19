@@ -96,7 +96,7 @@ body{
 
 }
 .card{
-    border: none !important;
+    /* border: none !important; */
     padding-left: 0;
     padding-right: 0;
 }
