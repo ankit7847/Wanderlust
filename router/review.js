@@ -3,7 +3,7 @@ const router = express.Router({ mergeParams: true });  // mergeParams allows us 
 const Listing = require("../models/listing.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
-const { reviewSchema } = require("../schema.js");
+const { reviewSchema, } = require("../schema.js");
 const Review = require("../models/review.js");
 
 // Validate Review
@@ -21,12 +21,9 @@ const validateReview = (req, res, next) => {
 router.post("/", validateReview, wrapAsync(async (req, res) => {
   let listing = await Listing.findById(req.params.id);
   let newReview = new Review(req.body.review);
-
   listing.review.push(newReview);
-
   await newReview.save();
   await listing.save();
-
   res.redirect(`/listings/${listing._id}`);
 }));
 
