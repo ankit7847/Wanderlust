@@ -1,8 +1,10 @@
 const { model } = require("mongoose");
 const Listing = require("./models/listing");
+const Review = require("./models/review");
 const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema } = require("./schema.js");
 const { reviewSchema, } = require("./schema.js");
+const review = require("./models/review.js");
 
 module.exports.isLoggedIn = (req,res,next)=>{
     if(!req.isAuthenticated()){
@@ -49,3 +51,17 @@ module.exports.validateListing = (req, res, next) => {
       next();
     }
   };
+
+  module.exports.isAuthor = async(req, res, next) => {
+    let { reviewId } = req.params;
+    let review = await Review.findById(reviewId); 
+    if (!review) {
+        req.flash("error", "Review not found");
+        return res.redirect("back");
+    }
+    if (!review.author.equals(res.locals.currUser._id)) {
+        req.flash("error", "You are not the Author");
+        return res.redirect(`/listings/${req.params.id}`);
+    }
+    next();
+};
